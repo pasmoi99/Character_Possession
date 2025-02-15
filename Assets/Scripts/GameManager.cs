@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     [Header("Camera")] 
     public CameraController CameraController;
 
-    [Header("Characters")] 
+    [Header("Character")]
+    public CharaController MainChara;
     public CharaController CharaController;
 
 
