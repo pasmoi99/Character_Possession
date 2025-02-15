@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 554932217}
   - component: {fileID: 554932216}
   - component: {fileID: 554932221}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Chara 1a
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -540,6 +540,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 3
+  _swapKey: 114
+  _charaMask:
+    serializedVersion: 2
+    m_Bits: 8
+  _swapRadius: 0
+  JumpForce: 2.75
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraController: {fileID: 330585548}
+  MainChara: {fileID: 1395910610}
   CharaController: {fileID: 1395910610}
 --- !u!4 &970749440
 Transform:
@@ -886,14 +893,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395910608}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.01, y: 1.5799999, z: -4.6}
+  m_LocalRotation: {x: -0.041093785, y: -0.011172145, z: 0.04674072, w: 0.9979989}
+  m_LocalPosition: {x: 3.010343, y: 1.5730025, z: -4.601371}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1128656406}
   m_Father: {fileID: 891314172}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -4.645, y: -1.503, z: 5.424}
 --- !u!114 &1395910610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,6 +914,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
+  _swapKey: 101
+  _charaMask:
+    serializedVersion: 2
+    m_Bits: 8
+  _swapRadius: 5
 --- !u!54 &1395910611
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1018,7 +1030,7 @@ GameObject:
   - component: {fileID: 1396383399}
   - component: {fileID: 1396383401}
   - component: {fileID: 1396383400}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
