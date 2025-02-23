@@ -3,16 +3,20 @@ using UnityEngine;
 public class CharaController : MonoBehaviour
 {
 
-    protected Vector3 _inputDirection;
     private RaycastHit[] hit;
 
     [Header("Basic values")]
     [SerializeField] protected float _speed;
+    [SerializeField] protected float _speedRotation;
+
+    protected Vector3 _translation;
+    protected Quaternion _targetRotation;
 
     [Header("Swap character")]
     [SerializeField] protected KeyCode _swapKey;
-    [SerializeField] LayerMask _charaMask;
-    [SerializeField] float _swapRadius;
+    [SerializeField] protected LayerMask _charaMask;
+    [SerializeField] protected float _swapRadius;
+
     protected bool _swapKeyPressed;
     protected bool _isActive;
 
@@ -26,10 +30,8 @@ public class CharaController : MonoBehaviour
     {
         if (_isActive)
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-
-            _inputDirection = new Vector3(horizontal, 0, vertical).normalized;
+            _translation.x = Input.GetAxisRaw("Horizontal");
+            _translation.z = Input.GetAxisRaw("Vertical");
 
             if (Input.GetKeyDown(_swapKey))
             {
@@ -42,35 +44,49 @@ public class CharaController : MonoBehaviour
     {
         if (_isActive)
         {
-            Movement(_inputDirection, _speed);
+            if (_translation != Vector3.zero)
+            {
+                Movement();
+                Rotation();
+            }
 
             if (_swapKeyPressed)
             {
-                SwapCharacter();
                 _swapKeyPressed = false;
+                SwapCharacter();
             }
         }
     }
 
 
-    protected void Movement(Vector3 inputDirection, float speed)
+    protected void Movement()
     {
-        transform.Translate(inputDirection * speed * Time.deltaTime);
+        transform.Translate(_translation * _speed * Time.deltaTime, Space.World);
 
     }
-    virtual public void SwapCharacter()
+    protected void Rotation()
+    {
+        _targetRotation = Quaternion.LookRotation(_translation);
+        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation.eulerAngles.y, _speedRotation * Time.deltaTime);
+        transform.eulerAngles = Vector3.up * angle;
+    }
+
+    public virtual void SwapCharacter()
     {
 
-        Physics.SphereCastNonAlloc(transform.position, _swapRadius, transform.forward, hit, 10, _charaMask);
-        for (int i = 0; i < hit.Length; i++)
+        int totalHit = Physics.SphereCastNonAlloc(transform.position, _swapRadius, transform.forward, hit, 0, _charaMask);
+        if (totalHit > 0)
         {
-            if (hit[i].transform.gameObject.TryGetComponent(out CharaController chara))
+            for (int i = 0; i < hit.Length; i++)
             {
-                _isActive = false;
-                chara._isActive = true;
-                GameManager.MainGame.CharaController = chara;
-                GameManager.MainGame.CameraController.UpdateTarget(chara.transform);
-                break;
+                if (hit[i].transform.gameObject.TryGetComponent(out CharaController chara))
+                {
+                    _isActive = false;
+                    chara._isActive = true;
+                    GameManager.MainGame.CharaController = chara;
+                    GameManager.MainGame.CameraController.UpdateTarget(chara.transform);
+                    break;
+                }
             }
         }
     }
