@@ -66,6 +66,7 @@ public class CharaController : MonoBehaviour
     }
     protected void Rotation()
     {
+
         _targetRotation = Quaternion.LookRotation(_translation);
         float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation.eulerAngles.y, _speedRotation * Time.deltaTime);
         transform.eulerAngles = Vector3.up * angle;
@@ -77,17 +78,20 @@ public class CharaController : MonoBehaviour
         int totalHit = Physics.SphereCastNonAlloc(transform.position, _swapRadius, transform.forward, hit, 0, _charaMask);
         if (totalHit > 0)
         {
-            for (int i = 0; i < hit.Length; i++)
+            RaycastHit currentHit = hit[0];
+            for (int i = 0; i < totalHit - 1; i++)
             {
-                if (hit[i].transform.gameObject.TryGetComponent(out CharaController chara))
+                if (currentHit.distance > hit[i].distance)
                 {
-                    _isActive = false;
-                    chara._isActive = true;
-                    GameManager.MainGame.CharaController = chara;
-                    GameManager.MainGame.CameraController.UpdateTarget(chara.transform);
-                    break;
+                    currentHit = hit[i];
                 }
             }
+            currentHit.transform.gameObject.TryGetComponent(out CharaController chara);
+            Debug.Log(chara);
+            _isActive = false;
+            chara._isActive = true;
+            GameManager.MainGame.CharaController = chara;
+            GameManager.MainGame.CameraController.UpdateTarget(chara.transform);
         }
     }
 
