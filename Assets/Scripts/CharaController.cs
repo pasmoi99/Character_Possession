@@ -58,6 +58,10 @@ public class CharaController : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, _swapRadius);
+    }
 
     protected void Movement()
     {
@@ -76,18 +80,26 @@ public class CharaController : MonoBehaviour
     {
 
         int totalHit = Physics.SphereCastNonAlloc(transform.position, _swapRadius, transform.forward, hit, 0, _charaMask);
+        Debug.Log(totalHit);
+
         if (totalHit > 0)
         {
             RaycastHit currentHit = hit[0];
-            for (int i = 0; i < totalHit - 1; i++)
+            if (totalHit > 1)
             {
-                if (currentHit.distance > hit[i].distance)
+                for (int i = 0; i < totalHit; i++)
                 {
-                    currentHit = hit[i];
+
+                    Debug.Log(hit[i].collider.gameObject);
+                    if (currentHit.distance > hit[i].distance)
+                    {
+                        currentHit = hit[i];
+                    }
                 }
+
             }
-            currentHit.transform.gameObject.TryGetComponent(out CharaController chara);
-            Debug.Log(chara);
+            currentHit.collider.gameObject.TryGetComponent(out CharaController chara);
+            //Debug.Log(chara);
             _isActive = false;
             chara._isActive = true;
             GameManager.MainGame.CharaController = chara;
