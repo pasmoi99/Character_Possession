@@ -8,6 +8,7 @@ public class CharaController : MonoBehaviour
     [Header("Basic values")]
     [SerializeField] protected float _speed;
     [SerializeField] protected float _speedRotation;
+    [SerializeField] protected float _rotation;
 
     protected Vector3 _translation;
     protected Quaternion _targetRotation;
@@ -22,6 +23,7 @@ public class CharaController : MonoBehaviour
 
     private void Start()
     {
+        //récupérer l'angle actuel
         _isActive = true;
         hit = new RaycastHit[3];
     }
@@ -70,7 +72,7 @@ public class CharaController : MonoBehaviour
     }
     protected void Rotation()
     {
-
+        // change l'angle (rotation)
         _targetRotation = Quaternion.LookRotation(_translation);
         float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation.eulerAngles.y, _speedRotation * Time.deltaTime);
         transform.eulerAngles = Vector3.up * angle;
