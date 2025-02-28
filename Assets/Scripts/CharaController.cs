@@ -8,8 +8,9 @@ public class CharaController : MonoBehaviour
     [Header("Basic values")]
     [SerializeField] protected float _speed;
     [SerializeField] protected float _speedRotation;
-    [SerializeField] protected float _rotation;
+    [SerializeField] private float _rotation;
 
+    protected Vector3 _forward;
     protected Vector3 _translation;
     protected Quaternion _targetRotation;
 
@@ -23,7 +24,15 @@ public class CharaController : MonoBehaviour
 
     private void Start()
     {
-        //récupérer l'angle actuel
+        _forward = new Vector3(0, 0, 1);
+        if (Vector3.Angle(transform.forward, _forward)<= Vector3.Angle(_forward, transform.forward))
+        {
+            _rotation = Vector3.Angle(transform.forward,_forward); 
+        }
+        else
+        {
+            _rotation = Vector3.Angle(_forward, transform.forward);
+        }
         _isActive = true;
         hit = new RaycastHit[3];
     }
@@ -72,6 +81,7 @@ public class CharaController : MonoBehaviour
     }
     protected void Rotation()
     {
+
         // change l'angle (rotation)
         _targetRotation = Quaternion.LookRotation(_translation);
         float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation.eulerAngles.y, _speedRotation * Time.deltaTime);
@@ -102,6 +112,7 @@ public class CharaController : MonoBehaviour
             }
             currentHit.collider.gameObject.TryGetComponent(out CharaController chara);
             //Debug.Log(chara);
+
             _isActive = false;
             chara._isActive = true;
             GameManager.MainGame.CharaController = chara;
