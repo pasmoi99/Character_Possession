@@ -3,7 +3,7 @@ using UnityEngine;
 public class CharaController : MonoBehaviour
 {
 
-    private RaycastHit[] hit;
+    private Collider[] _col;
 
     [Header("Basic values")]
     [SerializeField] protected float _speed;
@@ -25,16 +25,16 @@ public class CharaController : MonoBehaviour
     private void Start()
     {
         _forward = new Vector3(0, 0, 1);
-        if (Vector3.Angle(transform.forward, _forward)<= Vector3.Angle(_forward, transform.forward))
+        if (Vector3.Angle(transform.forward, _forward) <= Vector3.Angle(_forward, transform.forward))
         {
-            _rotation = Vector3.Angle(transform.forward,_forward); 
+            _rotation = Vector3.Angle(transform.forward, _forward);
         }
         else
         {
             _rotation = Vector3.Angle(_forward, transform.forward);
         }
         _isActive = true;
-        hit = new RaycastHit[3];
+        _col = new Collider[3];
     }
 
     void Update()
@@ -91,26 +91,32 @@ public class CharaController : MonoBehaviour
     public virtual void SwapCharacter()
     {
 
-        int totalHit = Physics.SphereCastNonAlloc(transform.position, _swapRadius, transform.forward, hit, 0, _charaMask);
-        Debug.Log(totalHit);
+        int totalCol = Physics.OverlapSphereNonAlloc(transform.position, _swapRadius, _col, _charaMask);
+        Debug.Log(totalCol);
 
-        if (totalHit > 0)
+        if (totalCol > 0)
         {
-            RaycastHit currentHit = hit[0];
-            if (totalHit > 1)
+            Collider currentCol = _col[0];
+            float dist1 = Mathf.Sqrt(Mathf.Pow(currentCol.transform.position.x - transform.position.x,2) + 
+                Mathf.Pow(currentCol.transform.position.x - transform.position.x, 2) + 
+                Mathf.Pow(currentCol.transform.position.x - transform.position.x, 2));
+            if (totalCol > 1)
             {
-                for (int i = 0; i < totalHit; i++)
+                for (int i = 1; i < totalCol; i++)
                 {
-
-                    Debug.Log(hit[i].collider.gameObject);
-                    if (currentHit.distance > hit[i].distance)
+                    float dist2 = Mathf.Sqrt(Mathf.Pow(_col[i].transform.position.x - transform.position.x, 2) +
+                        Mathf.Pow(_col[i].transform.position.x - transform.position.x, 2) +
+                        Mathf.Pow(_col[i].transform.position.x - transform.position.x, 2));
+                    //Debug.Log(_col[i].gameObject);
+                    if (dist1 > dist2)
                     {
-                        currentHit = hit[i];
+                        currentCol = _col[i];
+                        dist1 = dist2;
                     }
                 }
 
             }
-            currentHit.collider.gameObject.TryGetComponent(out CharaController chara);
+            currentCol.gameObject.TryGetComponent(out CharaController chara);
             //Debug.Log(chara);
 
             _isActive = false;
