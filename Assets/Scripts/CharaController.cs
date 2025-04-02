@@ -83,9 +83,8 @@ public class CharaController : MonoBehaviour
     {
 
         // change l'angle (rotation)
-        _targetRotation = Quaternion.LookRotation(_translation);
-        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation.eulerAngles.y, _speedRotation * Time.deltaTime);
-        transform.eulerAngles = Vector3.up * angle;
+        _targetRotation = Quaternion.LookRotation(_translation, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, _speedRotation * Time.deltaTime);
     }
 
     public virtual void SwapCharacter()

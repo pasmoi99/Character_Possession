@@ -32,8 +32,13 @@ public class Chara1Controller : CharaController
     {
         if (_isActive)
         {
-            Movement();
-            Rotation();
+            if (_translation != Vector3.zero) 
+            {
+                Movement();
+                Rotation();
+
+            }
+
             if (_canJump)
             {
                 Jump();
